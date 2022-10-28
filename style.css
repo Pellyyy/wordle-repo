@@ -1,0 +1,170 @@
+:root {
+    --bg-color: hsl(0, 0%, 15%);
+    --bg-color-lighter: hsl(0, 0%, 30%);
+    --main-color: hsl(280, 3%, 83%);
+    --yellow: hsl(37, 59%, 73%);
+    --green: hsl(140, 47%, 42%);
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+}
+
+body {
+    background-color: var(--bg-color);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 100vh;
+    font-size: clamp(1rem, 2.5vmin, 1.5rem);
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    border-bottom: 1px solid var(--main-color)  
+}
+
+h1 {
+    color: var(--main-color);
+    letter-spacing: 0.5px;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.keyboard-container {
+    display: grid;
+    grid-template-columns: repeat(20, minmax(auto, 1.25em));
+    grid-auto-rows: 3em;
+    gap: 0.5rem;
+    padding-bottom: 1rem;
+}
+
+.key,
+.fnkey {
+    grid-column: span 2;
+    font-size: inherit;
+    border: none;
+    border-radius: 0.33rem;
+    background-color: var(--main-color);
+    font-weight: 400;
+    color: var(--bg-color);
+    transition: background-color 200ms ease-out, scale 50ms ease-out;
+}
+
+.key:hover,
+.fnkey:hover {
+    background-color:  hsl(280, 3%, 60%);
+}
+
+.key:active,
+.fnkey:active {
+    scale: 0.975
+}
+
+.fnkey {
+    grid-column: span 3;
+}
+
+.fnkey > svg {
+    fill: var(--bg-color);
+}
+
+p {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--main-color);
+    transition: color 200ms ease-out;
+    cursor: default;
+}
+
+p:hover {
+    color:  hsl(280, 3%, 60%);
+}
+
+.field {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(2em, 3em));
+    grid-template-rows: repeat(6, minmax(2em, 3em));
+    gap: 0.5rem;
+    grid-auto-rows: 2em;
+    transition: transform 500ms ease-in-out;
+}
+
+.cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid  var(--bg-color-lighter);
+    font-weight: 400;
+    color: var(--main-color);
+    pointer-events: none;
+    transition: background-color 250ms ease-in-out, scale 500ms ease-in-out, border 250ms ease-in-out
+}
+
+.cell.evaluated {
+    scale: 0.9
+}
+
+.cell.active {
+    border: 1px solid white;
+}
+
+/* cell states */
+
+.cell[data-state="correct"] {
+    background-color: var(--green);
+    color: var(--bg-color);
+}
+
+.cell[data-state="contains"] {
+    background-color: var(--yellow);
+    color: var(--bg-color);
+}
+
+/* key states */
+
+
+.key.correct {
+    background-color: var(--green);
+    color: var(--bg-color);
+    }
+
+.key.correct:hover {
+    background-color: hsl(140, 47%, 30%);
+    color: var(--bg-color);
+    }
+
+.key.contains {
+    background-color: var(--yellow);
+    color: var(--bg-color);
+    }
+
+.key.contains:hover {
+    background-color: hsl(37, 59%, 60%);
+    color: var(--bg-color);  
+}
+
+.key.incorrect {
+    background-color: hsl(280, 3%, 40%);
+    color: var(--bg-color);
+    }
+
+
+
+
+
+
+@media screen and (min-width: 675px) {
+    .fnkey > svg {
+        scale: 1.25;
+    }
+}
+
