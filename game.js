@@ -15297,7 +15297,42 @@ let targetWord = "",
     gameRunning = true,
     win = false
 
-updateActiveCell(cellId, "advance")
+// ----------------------------------------- onload animations -----------------------------------------
+
+const tl = gsap.timeline({
+    onComplete: () => {
+        updateActiveCell(cellId, "advance")
+    },
+    defaults: { duration: 1.25, ease: "power2.out" },
+})
+
+tl.from("header", {
+    y: "-100%",
+    opacity: 0,
+})
+tl.from(".row1", { y: "200%", opacity: 0 }, "<")
+tl.from(".row2", { y: "200%", opacity: 0 }, "<25%")
+tl.from(".row3", { y: "200%", opacity: 0 }, "<25%")
+
+tl.from(
+    ".uneven",
+    {
+        x: "-500%",
+        opacity: 0,
+        stagger: { each: 0.125, from: "end" },
+    },
+    "<25%"
+)
+tl.from(".even", { x: "500%", opacity: 0, stagger: 0.125 }, "<")
+tl.to("header", {
+    borderBottomColor: "rgb(212, 210, 213)",
+    duration: 1.25 * 0.5,
+})
+tl.from(".icons-right", { opacity: 0, x: "-200%" }, "<")
+tl.from(".icon-score", { opacity: 0, x: "200%" }, "<")
+
+// -----------------------------------------------------------------------------------------------------
+
 generateTargetWord(wordlist)
 
 //listen for keyboard inputs
@@ -15342,7 +15377,6 @@ function updateCell(pressedKey) {
         cellId++
         letterCount++
         updateActiveCell(cellId, "advance")
-        console.log(cellId)
     }
 }
 
@@ -15410,26 +15444,24 @@ function checkValidWord(arr) {
 }
 
 function compareInput() {
-    inputArr.forEach((letter) => {
-        //check if user input contains letters of the target word --> triggers yellow css property on cells and keys
-        if (targetWordArr.includes(letter)) {
+    //check if user input contains letters
+    for (i = 0; i < inputArr.length; i++) {
+        if (targetWordArr.includes(inputArr[i])) {
             document
-                .querySelectorAll(`[data-letter="${letter}"]`)
+                .querySelectorAll(`[data-letter="${inputArr[i]}"]`)
                 .forEach((cell) => {
                     if (!cell.classList.contains("evaluated")) {
                         cell.dataset.state = "contains"
                     }
                 })
             document
-                .querySelectorAll(`[data-value="${letter}"]`)
+                .querySelectorAll(`[data-value="${inputArr[i]}"]`)
                 .forEach((button) => {
                     button.classList.remove("correct")
                     button.classList.add("contains")
                 })
         }
-    })
-    //check if user input contains letters in the correct position --> triggers green css property on cells and keys
-    for (i = 0; i < inputArr.length; i++) {
+        //check if user input contains letters in the correct position
         if (inputArr[i] === targetWordArr[i]) {
             document
                 .querySelectorAll(
@@ -15481,13 +15513,15 @@ function updateActiveCell(cellId, mode) {
 }
 
 function renderResult() {
-    const resultMsg = document.createElement("p"),
-        childElement = document.querySelector(".keyboard-container")
-
-    if (win) {
-        resultMsg.innerHTML = `You won! 🤗 Press F5 to play again.`
-    } else {
-        resultMsg.innerHTML = `You lost! 😪 Press F5 to play again.`
-    }
-    document.body.insertBefore(resultMsg, childElement)
+    const resultMsg = document.querySelector(".resultMsg"),
+        field = document.querySelector(".field")
+    field.classList.add("gameover")
+    setTimeout(() => {
+        resultMsg.classList.add("active")
+        if (win) {
+            resultMsg.innerText = `You won! 🤗 Press F5 to play again.`
+        } else {
+            resultMsg.innerText = `You lost! 😪 Press F5 to play again.`
+        }
+    }, 500)
 }

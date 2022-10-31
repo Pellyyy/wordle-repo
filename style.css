@@ -15,6 +15,10 @@
 body {
     background-color: var(--bg-color);
     position: relative;
+    overflow: hidden;
+}
+
+.wrapper {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -26,16 +30,29 @@ body {
 header {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     width: 100%;
-    border-bottom: 1px solid var(--main-color)  
+    padding: 1rem 4rem;
+    border-bottom-color: rgba(212, 210, 213, 0);
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    
 }
 
+.icons-right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 3rem;
+}
 h1 {
     color: var(--main-color);
     letter-spacing: 0.5px;
-    margin-top: 1rem;
-    margin-bottom: 0.5rem;
+}
+
+a > svg {
+    fill: var(--main-color);
+    scale: 1.5;
 }
 
 .keyboard-container {
@@ -76,17 +93,24 @@ h1 {
     fill: var(--bg-color);
 }
 
-p {
+.resultMsg {
+    position: absolute;
+    min-width: 100%;
+    bottom: 30%;
+    left: 50%;
+    transform: translate(-50%, 0);
     display: flex;
     justify-content: center;
     align-items: center;
     color: var(--main-color);
-    transition: color 200ms ease-out;
+    font-size: clamp(1rem, 2.5vmin, 1.5rem);
     cursor: default;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
 }
 
-p:hover {
-    color:  hsl(280, 3%, 60%);
+.resultMsg.active {
+    opacity: 1;
 }
 
 .field {
@@ -96,6 +120,10 @@ p:hover {
     gap: 0.5rem;
     grid-auto-rows: 2em;
     transition: transform 500ms ease-in-out;
+}
+
+.field.gameover {
+    transform: translate(0, -5%);
 }
 
 .cell {
