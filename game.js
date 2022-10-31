@@ -15297,7 +15297,7 @@ let targetWord = "",
     gameRunning = true,
     win = false
 
-// ----------------------------------------- onload animations -----------------------------------------
+//------------------------------------------ onload animations -----------------------------------------
 
 const tl = gsap.timeline({
     onComplete: () => {
@@ -15321,17 +15321,21 @@ tl.from(
         opacity: 0,
         stagger: { each: 0.125, from: "end" },
     },
-    "<25%"
+    "<"
 )
 tl.from(".even", { x: "500%", opacity: 0, stagger: 0.125 }, "<")
-tl.to("header", {
-    borderBottomColor: "rgb(212, 210, 213)",
-    duration: 1.25 * 0.5,
-})
+tl.to(
+    "header",
+    {
+        borderBottomColor: "rgb(212, 210, 213)",
+        duration: 1.25 * 0.5,
+    },
+    "<75%"
+)
 tl.from(".icons-right", { opacity: 0, x: "-200%" }, "<")
 tl.from(".icon-score", { opacity: 0, x: "200%" }, "<")
 
-// -----------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------
 
 generateTargetWord(wordlist)
 
