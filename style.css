@@ -48,11 +48,17 @@ header {
 h1 {
     color: var(--main-color);
     letter-spacing: 0.5px;
+    font-family: 'Lobster', cursive;
 }
 
 a > svg {
     fill: var(--main-color);
     scale: 1.5;
+    transition: fill 200ms ease-out
+}
+
+a > svg:hover {
+    fill: hsl(280, 3%, 60%);
 }
 
 .keyboard-container {
