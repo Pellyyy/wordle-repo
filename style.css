@@ -32,23 +32,30 @@ header {
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    padding: 1rem 4rem;
+    padding: 1rem;
     border-bottom-color: rgba(212, 210, 213, 0);
     border-bottom-width: 1px;
     border-bottom-style: solid;
-    
 }
 
+.icons-left,
 .icons-right {
+    width: 15%;
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 3rem;
 }
+
 h1 {
     color: var(--main-color);
     letter-spacing: 0.5px;
     font-family: 'Lobster', cursive;
+    transition: color 200ms ease-out;   
+}
+
+h1.win {
+    color: var(--green)
 }
 
 a > svg {
@@ -88,7 +95,7 @@ a > svg:hover {
 
 .key:active,
 .fnkey:active {
-    scale: 0.975
+    scale: 0.975;
 }
 
 .fnkey {
@@ -140,7 +147,8 @@ a > svg:hover {
     font-weight: 400;
     color: var(--main-color);
     pointer-events: none;
-    transition: background-color 250ms ease-in-out, scale 500ms ease-in-out, border 250ms ease-in-out
+    transition: background-color 250ms ease-in-out, scale 500ms ease-in-out, border 250ms ease-in-out;
+    transform-origin: center;
 }
 
 .cell.evaluated {

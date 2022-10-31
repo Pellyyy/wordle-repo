@@ -15287,7 +15287,8 @@ zonal`
 
 const wordlist = wordlistImport.split("\n"),
     delKey = document.querySelector('[data-value="Del"]'),
-    enterKey = document.querySelector('[data-value="Enter"]')
+    enterKey = document.querySelector('[data-value="Enter"]'),
+    heading = document.querySelector("h1")
 
 let targetWord = "",
     targetWordArr = [],
@@ -15299,10 +15300,8 @@ let targetWord = "",
 
 //------------------------------------------ onload animations -----------------------------------------
 
+const firstCell = document.getElementById("1")
 const tl = gsap.timeline({
-    onComplete: () => {
-        updateActiveCell(cellId, "advance")
-    },
     defaults: { duration: 1.25, ease: "power2.out" },
 })
 
@@ -15332,8 +15331,27 @@ tl.to(
     },
     "<75%"
 )
-tl.from(".icons-right", { opacity: 0, x: "-200%" }, "<")
-tl.from(".icon-score", { opacity: 0, x: "200%" }, "<")
+tl.from(".icons-left", { opacity: 0, x: "-200%" }, "<")
+tl.from(
+    ".icons-right",
+    {
+        opacity: 0,
+        x: "200%",
+        onComplete: () => {
+            updateActiveCell(cellId, "advance")
+        },
+    },
+    "<"
+)
+
+tl.to(firstCell, {
+    rotate: "10deg",
+    y: -10,
+    repeat: 4,
+    yoyo: true,
+    duration: 0.25,
+})
+tl.to(firstCell, { rotate: "0deg", y: 0, duration: 0.75 })
 
 //-------------------------------------------------------------------------------------------------------
 
@@ -15380,6 +15398,7 @@ function updateCell(pressedKey) {
         inputArr.push(pressedKey)
         cellId++
         letterCount++
+        console.log(`letterCount: ${letterCount}`)
         updateActiveCell(cellId, "advance")
     }
 }
@@ -15427,6 +15446,7 @@ function submitWord() {
         win = true
         gameRunning = false
         renderResult()
+        heading.classList.add("win")
     }
 
     //check for loss
@@ -15497,10 +15517,14 @@ function compareInput() {
 //adds or removes active class from the cells --> white border around active cell
 function updateActiveCell(cellId, mode) {
     let funcCellId
-    if (cellId === 31) {
-        funcCellId = 30
-    } else {
-        funcCellId = cellId
+    cellId === 31 ? (funcCellId = 30) : (funcCellId = cellId)
+    if (mode === "advance" && letterCount === 5) {
+        document.getElementById(funcCellId - 1).classList.add("active")
+        document.getElementById(funcCellId - 2).classList.add("active")
+        document.getElementById(funcCellId - 3).classList.add("active")
+        document.getElementById(funcCellId - 4).classList.add("active")
+        document.getElementById(funcCellId - 5).classList.add("active")
+        return
     }
     if (mode === "advance") {
         document.getElementById(funcCellId).classList.add("active")
@@ -15508,6 +15532,14 @@ function updateActiveCell(cellId, mode) {
             document.getElementById(funcCellId - 1).classList.remove("active")
         }
     }
+    if (mode === "delete" && letterCount === 5) {
+        document.getElementById(funcCellId - 1).classList.remove("active")
+        document.getElementById(funcCellId - 3).classList.remove("active")
+        document.getElementById(funcCellId - 4).classList.remove("active")
+        document.getElementById(funcCellId - 5).classList.remove("active")
+        return
+    }
+
     if (mode === "delete") {
         if (funcCellId > 1) {
             document.getElementById(funcCellId).classList.remove("active")
