@@ -15302,7 +15302,7 @@ let targetWord = "",
 
 const firstCell = document.getElementById("1")
 const tl = gsap.timeline({
-    defaults: { duration: 1.25, ease: "power2.out" },
+    defaults: { duration: 0.75, ease: "power2.out" },
 })
 
 tl.from("header", {
@@ -15318,11 +15318,11 @@ tl.from(
     {
         x: "-500%",
         opacity: 0,
-        stagger: { each: 0.125, from: "end" },
+        stagger: { each: 0.1, from: "end" },
     },
     "<"
 )
-tl.from(".even", { x: "500%", opacity: 0, stagger: 0.125 }, "<")
+tl.from(".even", { x: "500%", opacity: 0, stagger: 0.1 }, "<")
 tl.to(
     "header",
     {

@@ -40,11 +40,11 @@ header {
 
 .icons-left,
 .icons-right {
-    width: 15%;
+    width: 30%;
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 3rem;
+    gap: 1.5rem;
 }
 
 h1 {
@@ -60,7 +60,7 @@ h1.win {
 
 a > svg {
     fill: var(--main-color);
-    scale: 1.5;
+    scale: 1.25;
     transition: fill 200ms ease-out
 }
 
@@ -204,9 +204,21 @@ a > svg:hover {
 
 
 
-@media screen and (min-width: 675px) {
+@media screen and (min-width: 740px) {
     .fnkey > svg {
         scale: 1.25;
     }
+    .icons-left {
+        gap: 3rem;
+    }
+    .icons-left,
+    .icons-right {
+        width: 15%;
+    }
+    a > svg {
+    scale: 1.5;
+    }
+
 }
+
 
