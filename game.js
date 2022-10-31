@@ -15445,7 +15445,8 @@ function deleteCell() {
 
 function submitWord() {
     if (!gameRunning) return
-    if (letterCount !== 5 || !checkValidWord(inputArr)) {
+    if (letterCount !== 5) return
+    if (!checkValidWord(inputArr)) {
         animateInvalid()
         return
     }
