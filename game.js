@@ -15353,6 +15353,23 @@ tl.to(firstCell, {
 })
 tl.to(firstCell, { rotate: "0deg", y: 0, duration: 0.75 })
 
+//------------------------------------------ animation functions ----------------------------------------
+
+function animateInvalid() {
+    const tlInvalid = gsap.timeline({
+        defaults: { duration: 0.1, ease: "power2.out" },
+    })
+    tlInvalid.to(".active", {
+        x: 5,
+    })
+    tlInvalid.to(".active", {
+        x: -5,
+    })
+    tlInvalid.to(".active", {
+        x: 0,
+    })
+}
+
 //-------------------------------------------------------------------------------------------------------
 
 generateTargetWord(wordlist)
@@ -15428,7 +15445,11 @@ function deleteCell() {
 
 function submitWord() {
     if (!gameRunning) return
-    if (letterCount !== 5 || !checkValidWord(inputArr)) return
+    if (letterCount !== 5 || !checkValidWord(inputArr)) {
+        animateInvalid()
+        return
+    }
+
     document.querySelectorAll(".active").forEach((cell) => {
         cell.classList.remove("active")
     })
