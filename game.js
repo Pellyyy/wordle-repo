@@ -15429,7 +15429,10 @@ function deleteCell() {
 function submitWord() {
     if (!gameRunning) return
     if (letterCount !== 5 || !checkValidWord(inputArr)) return
-
+    document.querySelectorAll(".active").forEach((cell) => {
+        cell.classList.remove("active")
+    })
+    document.getElementById(`${cellId}`).classList.add("active")
     compareInput()
 
     //change class of all submitted/evaluated cells
@@ -15534,10 +15537,10 @@ function updateActiveCell(cellId, mode) {
     }
     if (mode === "delete" && letterCount === 5) {
         document.getElementById(funcCellId - 1).classList.remove("active")
+        document.getElementById(funcCellId - 2).classList.remove("active")
         document.getElementById(funcCellId - 3).classList.remove("active")
         document.getElementById(funcCellId - 4).classList.remove("active")
         document.getElementById(funcCellId - 5).classList.remove("active")
-        return
     }
 
     if (mode === "delete") {
