@@ -15487,6 +15487,7 @@ function submitWord() {
         return
     }
 
+    compareInput()
     document.querySelectorAll(".active").forEach((cell) => {
         cell.classList.remove("active")
     })
@@ -15494,16 +15495,6 @@ function submitWord() {
     if (cellId <= 30) {
         document.getElementById(`${cellId}`).classList.add("active")
     }
-    compareInput()
-    //change class of all submitted/evaluated cells
-    inputArr.forEach((letter) => {
-        document
-            .querySelectorAll(`[data-letter="${letter}"]`)
-            .forEach((cell) => {
-                cell.style.scale = null
-                cell.classList.add("evaluated")
-            })
-    })
 
     //check for win
     if (JSON.stringify(targetWordArr) === JSON.stringify(inputArr)) {
@@ -15532,31 +15523,59 @@ function checkValidWord(arr) {
 }
 
 function compareInput() {
-    //check if user input contains letters
+    let targetWordArrCopy = [...targetWordArr]
+    //check if user input contains letters in the correct position
+
     for (i = 0; i < inputArr.length; i++) {
+        const targetCell = document.querySelector(
+            `[data-letter="${inputArr[i]}"][data-count="${i}"]:not(.evaluated)`
+        )
+        const btn = document.querySelector(`.key[data-value="${inputArr[i]}"]`)
+        if (inputArr[i] === targetWordArr[i]) {
+            targetCell.dataset.state = "correct"
+
+            btn.classList.remove("contains")
+            btn.classList.add("correct")
+            targetWordArrCopy[i] = 0
+        }
+    }
+    for (i = 0; i < inputArr.length; i++) {
+        const targetCell = document.querySelector(
+            `[data-letter="${inputArr[i]}"][data-count="${i}"]:not(.evaluated)`
+        )
+        const btn = document.querySelector(`.key[data-value="${inputArr[i]}"]`)
+        if (targetWordArrCopy.includes(inputArr[i])) {
+            targetCell.dataset.state = "contains"
+
+            if (!btn.classList.contains("correct")) {
+                btn.classList.add("contains")
+            }
+        }
+        if (
+            !btn.classList.contains("contains") &&
+            !btn.classList.contains("correct")
+        ) {
+            btn.classList.add("incorrect")
+        }
+        targetCell.style.scale = null //overwrite gsap weirdness
+        targetCell.classList.add("evaluated")
+    }
+}
+
+/* 
+        //check if user input contains letters
         if (targetWordArr.includes(inputArr[i])) {
             const targetCell = document.querySelector(
                 `[data-letter="${inputArr[i]}"][data-count="${i}"]:not(.evaluated)`
             )
-            targetCell.dataset.state = "contains"
+            if (targetCell.dataset.state !== "correct")
+                targetCell.dataset.state = "contains"
             const btn = document.querySelector(
                 `.key[data-value="${inputArr[i]}"]`
             )
             if (!btn.classList.contains("correct")) {
                 btn.classList.add("contains")
             }
-        }
-        //check if user input contains letters in the correct position
-        if (inputArr[i] === targetWordArr[i]) {
-            const targetCell = document.querySelector(
-                `[data-letter="${inputArr[i]}"][data-count="${i}"]:not(.evaluated)`
-            )
-            targetCell.dataset.state = "correct"
-            const btn = document.querySelector(
-                `.key[data-value="${inputArr[i]}"]`
-            )
-            btn.classList.remove("contains")
-            btn.classList.add("correct")
         }
         //update css property for keys that are neither in the correct position nor contained in the target word
         const btn = document.querySelector(`.key[data-value="${inputArr[i]}"]`)
@@ -15568,12 +15587,12 @@ function compareInput() {
         }
     }
 }
+ */
 
 //adds or removes active class from the cells --> white border around active cell
 function updateActiveCell(cellId, mode) {
     let funcCellId
     cellId === 31 ? (funcCellId = 30) : (funcCellId = cellId)
-    console.log(`funcCellId = "${funcCellId}"`)
 
     if (mode === "advance" && letterCount === 5) {
         if (funcCellId === 30) {
