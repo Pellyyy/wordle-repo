@@ -15323,6 +15323,7 @@ tl.from(
     "<"
 )
 tl.from(".even", { x: "500%", opacity: 0, stagger: 0.1 }, "<")
+
 tl.to(
     "header",
     {
@@ -15337,27 +15338,54 @@ tl.from(
     {
         opacity: 0,
         x: "200%",
-        onComplete: () => {
-            updateActiveCell(cellId, "advance")
-        },
     },
     "<"
 )
 
+tl.set(firstCell, { borderColor: "hsl(37, 59%, 73%)" })
+
 tl.to(firstCell, {
     rotate: "10deg",
     y: -10,
-    repeat: 4,
+    repeat: 1,
     yoyo: true,
     duration: 0.25,
 })
-tl.to(firstCell, { rotate: "0deg", y: 0, duration: 0.75 })
+
+tl.set(firstCell, { borderColor: "hsl(140, 47%, 42%)" })
+
+tl.to(firstCell, {
+    rotate: "10deg",
+    y: -10,
+    repeat: 1,
+    yoyo: true,
+    duration: 0.25,
+})
+
+tl.set(firstCell, { borderColor: "hsl(280, 3%, 83%)" })
+
+tl.to(firstCell, {
+    rotate: "10deg",
+    y: -10,
+    duration: 0.25,
+})
+
+tl.to(firstCell, {
+    rotate: "0deg",
+    onComplete: () => {
+        updateActiveCell(cellId, "advance")
+    },
+    y: 0,
+    duration: 0.75,
+})
+
+tl.set(firstCell, { borderColor: "" })
 
 //------------------------------------------ animation functions ----------------------------------------
 
 function animateInvalid() {
     const tlInvalid = gsap.timeline({
-        defaults: { duration: 0.1, ease: "power2.out" },
+        defaults: { duration: 0.05, ease: "power2.out" },
     })
     tlInvalid.to(".active", {
         x: 5,
@@ -15367,6 +15395,18 @@ function animateInvalid() {
     })
     tlInvalid.to(".active", {
         x: 0,
+    })
+}
+
+function animateInput() {
+    gsap.to(".active", {
+        scale: 1.075,
+        rotate: "2deg",
+        y: -2,
+        repeat: 1,
+        yoyo: true,
+        duration: 0.03,
+        ease: "back.out(1)",
     })
 }
 
@@ -15405,19 +15445,17 @@ function generateTargetWord(list) {
     targetWordArr = targetWord.split("")
 }
 
-function updateCell(pressedKey) {
-    if (!gameRunning) return
-    if (letterCount < 5) {
-        const cell = document.getElementById(cellId)
-        cell.dataset.letter = pressedKey
-        cell.dataset.count = letterCount
-        cell.innerText = pressedKey
-        inputArr.push(pressedKey)
-        cellId++
-        letterCount++
-        console.log(`letterCount: ${letterCount}`)
-        updateActiveCell(cellId, "advance")
-    }
+function updateCell(key) {
+    if (!gameRunning || letterCount === 5) return
+    const cell = document.getElementById(cellId)
+    cell.dataset.letter = key
+    cell.dataset.count = letterCount
+    animateInput()
+    cell.innerText = key
+    inputArr.push(key)
+    cellId++
+    letterCount++
+    updateActiveCell(cellId, "advance")
 }
 
 function deleteCell() {
@@ -15437,15 +15475,13 @@ function deleteCell() {
     }
     cell = document.getElementById(cellId)
     delete cell.dataset.letter
-    delete cell.dataset.letterCount
+    delete cell.dataset.count
     cell.innerText = ""
     inputArr.pop()
-    console.log(cellId)
 }
 
 function submitWord() {
-    if (!gameRunning) return
-    if (letterCount !== 5) return
+    if (!gameRunning || letterCount !== 5) return
     if (!checkValidWord(inputArr)) {
         animateInvalid()
         return
@@ -15454,14 +15490,17 @@ function submitWord() {
     document.querySelectorAll(".active").forEach((cell) => {
         cell.classList.remove("active")
     })
-    document.getElementById(`${cellId}`).classList.add("active")
-    compareInput()
 
+    if (cellId <= 30) {
+        document.getElementById(`${cellId}`).classList.add("active")
+    }
+    compareInput()
     //change class of all submitted/evaluated cells
     inputArr.forEach((letter) => {
         document
             .querySelectorAll(`[data-letter="${letter}"]`)
             .forEach((cell) => {
+                cell.style.scale = null
                 cell.classList.add("evaluated")
             })
     })
@@ -15496,40 +15535,31 @@ function compareInput() {
     //check if user input contains letters
     for (i = 0; i < inputArr.length; i++) {
         if (targetWordArr.includes(inputArr[i])) {
-            document
-                .querySelectorAll(`[data-letter="${inputArr[i]}"]`)
-                .forEach((cell) => {
-                    if (!cell.classList.contains("evaluated")) {
-                        cell.dataset.state = "contains"
-                    }
-                })
-            document
-                .querySelectorAll(`[data-value="${inputArr[i]}"]`)
-                .forEach((button) => {
-                    button.classList.remove("correct")
-                    button.classList.add("contains")
-                })
+            const targetCell = document.querySelector(
+                `[data-letter="${inputArr[i]}"][data-count="${i}"]:not(.evaluated)`
+            )
+            targetCell.dataset.state = "contains"
+            const btn = document.querySelector(
+                `.key[data-value="${inputArr[i]}"]`
+            )
+            if (!btn.classList.contains("correct")) {
+                btn.classList.add("contains")
+            }
         }
         //check if user input contains letters in the correct position
         if (inputArr[i] === targetWordArr[i]) {
-            document
-                .querySelectorAll(
-                    `[data-letter="${inputArr[i]}"][data-count="${i}"]`
-                )
-                .forEach((cell) => {
-                    if (!cell.classList.contains("evaluated")) {
-                        cell.dataset.state = "correct"
-                    }
-                })
-            document
-                .querySelectorAll(`[data-value="${inputArr[i]}"]`)
-                .forEach((button) => {
-                    button.classList.remove("contains")
-                    button.classList.add("correct")
-                })
+            const targetCell = document.querySelector(
+                `[data-letter="${inputArr[i]}"][data-count="${i}"]:not(.evaluated)`
+            )
+            targetCell.dataset.state = "correct"
+            const btn = document.querySelector(
+                `.key[data-value="${inputArr[i]}"]`
+            )
+            btn.classList.remove("contains")
+            btn.classList.add("correct")
         }
         //update css property for keys that are neither in the correct position nor contained in the target word
-        const btn = document.querySelector(`[data-value="${inputArr[i]}"]`)
+        const btn = document.querySelector(`.key[data-value="${inputArr[i]}"]`)
         if (
             !btn.classList.contains("contains") &&
             !btn.classList.contains("correct")
@@ -15543,13 +15573,24 @@ function compareInput() {
 function updateActiveCell(cellId, mode) {
     let funcCellId
     cellId === 31 ? (funcCellId = 30) : (funcCellId = cellId)
+    console.log(`funcCellId = "${funcCellId}"`)
+
     if (mode === "advance" && letterCount === 5) {
-        document.getElementById(funcCellId - 1).classList.add("active")
-        document.getElementById(funcCellId - 2).classList.add("active")
-        document.getElementById(funcCellId - 3).classList.add("active")
-        document.getElementById(funcCellId - 4).classList.add("active")
-        document.getElementById(funcCellId - 5).classList.add("active")
-        return
+        if (funcCellId === 30) {
+            document.getElementById(funcCellId).classList.add("active")
+            document.getElementById(funcCellId - 1).classList.add("active")
+            document.getElementById(funcCellId - 2).classList.add("active")
+            document.getElementById(funcCellId - 3).classList.add("active")
+            document.getElementById(funcCellId - 4).classList.add("active")
+            return
+        } else {
+            document.getElementById(funcCellId - 1).classList.add("active")
+            document.getElementById(funcCellId - 2).classList.add("active")
+            document.getElementById(funcCellId - 3).classList.add("active")
+            document.getElementById(funcCellId - 4).classList.add("active")
+            document.getElementById(funcCellId - 5).classList.add("active")
+            return
+        }
     }
     if (mode === "advance") {
         document.getElementById(funcCellId).classList.add("active")
@@ -15558,13 +15599,20 @@ function updateActiveCell(cellId, mode) {
         }
     }
     if (mode === "delete" && letterCount === 5) {
-        document.getElementById(funcCellId - 1).classList.remove("active")
-        document.getElementById(funcCellId - 2).classList.remove("active")
-        document.getElementById(funcCellId - 3).classList.remove("active")
-        document.getElementById(funcCellId - 4).classList.remove("active")
-        document.getElementById(funcCellId - 5).classList.remove("active")
+        if (funcCellId === 30) {
+            document.getElementById(funcCellId - 1).classList.remove("active")
+            document.getElementById(funcCellId - 2).classList.remove("active")
+            document.getElementById(funcCellId - 3).classList.remove("active")
+            document.getElementById(funcCellId - 4).classList.remove("active")
+            return
+        } else {
+            document.getElementById(funcCellId - 1).classList.remove("active")
+            document.getElementById(funcCellId - 2).classList.remove("active")
+            document.getElementById(funcCellId - 3).classList.remove("active")
+            document.getElementById(funcCellId - 4).classList.remove("active")
+            document.getElementById(funcCellId - 5).classList.remove("active")
+        }
     }
-
     if (mode === "delete") {
         if (funcCellId > 1) {
             document.getElementById(funcCellId).classList.remove("active")

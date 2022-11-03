@@ -152,11 +152,11 @@ a > svg:hover {
 }
 
 .cell.evaluated {
-    scale: 0.9
+    scale: 0.9;
 }
 
 .cell.active {
-    border: 1px solid white;
+    border: 1px solid var(--main-color);
 }
 
 /* cell states */
