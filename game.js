@@ -15561,6 +15561,7 @@ function compareInput() {
         }
         targetCell.style.scale = null //overwrites gsap weirdness
         targetCell.classList.add("evaluated")
+        targetWordArrCopy[i] = 0
     }
 }
 
