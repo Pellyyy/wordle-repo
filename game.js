@@ -15298,6 +15298,8 @@ let targetWord = "",
     gameRunning = true,
     win = false
 
+const headline = new SplitType("#headline", { types: "chars" })
+
 //------------------------------------------ onload animations -----------------------------------------
 
 const firstCell = document.getElementById("1")
@@ -15309,6 +15311,7 @@ tl.from("header", {
     y: "-100%",
     opacity: 0,
 })
+tl.from(".char", { y: -25, opacity: 0, stagger: 0.1 }, "<")
 tl.from(".row1", { y: "200%", opacity: 0 }, "<")
 tl.from(".row2", { y: "200%", opacity: 0 }, "<25%")
 tl.from(".row3", { y: "200%", opacity: 0 }, "<25%")
@@ -15524,7 +15527,6 @@ function checkValidWord(arr) {
 
 function compareInput() {
     let targetWordArrCopy = [...targetWordArr]
-    //check if user input contains letters in the correct position
 
     for (i = 0; i < inputArr.length; i++) {
         const targetCell = document.querySelector(
@@ -15557,37 +15559,10 @@ function compareInput() {
         ) {
             btn.classList.add("incorrect")
         }
-        targetCell.style.scale = null //overwrite gsap weirdness
+        targetCell.style.scale = null //overwrites gsap weirdness
         targetCell.classList.add("evaluated")
     }
 }
-
-/* 
-        //check if user input contains letters
-        if (targetWordArr.includes(inputArr[i])) {
-            const targetCell = document.querySelector(
-                `[data-letter="${inputArr[i]}"][data-count="${i}"]:not(.evaluated)`
-            )
-            if (targetCell.dataset.state !== "correct")
-                targetCell.dataset.state = "contains"
-            const btn = document.querySelector(
-                `.key[data-value="${inputArr[i]}"]`
-            )
-            if (!btn.classList.contains("correct")) {
-                btn.classList.add("contains")
-            }
-        }
-        //update css property for keys that are neither in the correct position nor contained in the target word
-        const btn = document.querySelector(`.key[data-value="${inputArr[i]}"]`)
-        if (
-            !btn.classList.contains("contains") &&
-            !btn.classList.contains("correct")
-        ) {
-            btn.classList.add("incorrect")
-        }
-    }
-}
- */
 
 //adds or removes active class from the cells --> white border around active cell
 function updateActiveCell(cellId, mode) {
